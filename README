@@ -1,1 +1,2 @@
-Adicione o testng ao classpath
+- Adicione o lib/testng-5.12.1.jar ao classpath (É possível utilizar o JUnit 4 também);
+-
