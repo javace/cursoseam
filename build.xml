@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Loja>
+<project name="Loja" basedir="." default="all">
+	<property file="build.properties" />
+	<path id="classpath">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<path id="webinf-classpath">
+		<fileset dir="${webroot.dir}/WEB-INF/lib">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<path id="libs-path">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<!-- Limpando arquivos de outros builds -->
+	<target name="clean">
+		<delete dir="${default.target.dir}" />
+		<mkdir dir="${test.classes.dir}" />
+		<mkdir dir="${classes.dir}" />
+		<mkdir dir="${war.dir}" />
+	</target>
+
+	<target name="compile" depends="clean,db.create">
+		<!-- Compila App classes -->
+		<copy todir="${classes.dir}">
+			<fileset dir="${source.dir}" excludes="**/*.java" />
+		</copy>
+		<javac destdir="${classes.dir}" srcdir="${source.dir}" debug="true" debuglevel="vars,lines,source" source="1.5" target="1.5">
+			<classpath>
+				<path refid="webinf-classpath" />
+			</classpath>
+		</javac>
+		<javac destdir="${test.classes.dir}" srcdir="${test.source.dir}" debug="true" debuglevel="vars,lines,source" source="1.5" target="1.5">
+			<classpath>
+				<path refid="classpath" />
+				<path refid="webinf-classpath" />
+				<pathelement path="${classes.dir}" />
+			</classpath>
+		</javac>
+	</target>
+
+	<taskdef name="testng" classname="org.testng.TestNGAntTask" classpathref="libs-path" />
+
+	<path id="runpath">
+		<path refid="webinf-classpath" />
+		<path refid="libs-path" />
+		<pathelement location="${test.classes.dir}" />
+		<pathelement location="${classes.dir}" />
+	</path>
+
+	<target name="test" depends="compile">
+		<mkdir dir="${test.report.dir}" />
+		<testng haltonfailure="true" outputdir="${test.report.dir}" classpathref="runpath">
+			<xmlfileset dir="${test.source.dir}" includes="Suite.xml" />
+		</testng>
+	</target>
+
+	<target name="war" description="create war file" depends="test">
+		<war destfile="${war.file}" basedir="${webroot.dir}">
+			<classes dir="${classes.dir}" excludes="**/*Test*.class" />
+		</war>
+	</target>
+
+	<!-- Testando webservice -->
+	<target name="deploy-tomcat" depends="war">
+		<copy file="${war.file}" tofile="${tomcat.wartarget}" overwrite="true" />
+	</target>
+
+	<target name="tomcat-start" depends="deploy-tomcat">
+		<echo>** Starting local Tomcat **</echo>
+		<exec executable="bash" newenvironment="false" dir=".">
+			<arg value="${tomcat.startup}" />
+		</exec>
+	</target>
+
+	<target name="testws" depends="tomcat-start">
+		<mkdir dir="${test.report.dir}" />
+		<waitfor maxwait="5" maxwaitunit="minute"
+		    timeoutproperty="tomcat.start.expired.time">
+			<and>
+				<socket server="127.0.0.1" port="${tomcat.port}"/>
+				<http url="${tomcat.url}:${tomcat.port}/${tomcat.context}" errorsBeginAt="404"/>
+			</and>
+		</waitfor>
+		<fail if="tomcat.start.expired.time" message="Error when trying to startup Tomcat" />
+		<testng haltonfailure="true" outputdir="${test.report.dir}" classpathref="runpath">
+			<xmlfileset dir="${test.source.dir}" includes="SuiteWebservice.xml" />
+		</testng>
+	</target>
+
+
+	<target name="tomcat-stop" depends="testws">
+		<echo>** Stopping local Tomcat **</echo>
+		<exec executable="bash" newenvironment="false" dir=".">
+			<arg value="${tomcat.shutdown}" />
+		</exec>
+	</target>
+
+	<!-- Deploy em homologacao -->
+	<target name="homologa" depends="tomcat-stop">
+		<echo>** Stopping Tomcat **</echo>
+		<sshexec command="${homologa.tomcatstop}" host="${homologa.sshhost}" password="${homologa.sshpassword}" username="${homologa.sshuser}" />
+		<echo>** Removing application directory **</echo>
+		<sshexec command="${homologa.wardir}" host="${homologa.sshhost}" password="${homologa.sshpassword}" username="${homologa.sshuser}" />
+		<echo>** Sending WAR **</echo>
+		<scp trust="true" file="${war.file}" todir="${homologa.sshuser}:${homologa.sshpassword}@${homologa.sshhost}:${homologa.wartarget}">
+		</scp>
+		<echo>** Starting Tomcat **</echo>
+		<sshexec command="${homologa.tomcatstart}" host="${homologa.sshhost}" password="${homologa.sshpassword}" username="${homologa.sshuser}" />
+	</target>
+
+	<!-- Deploy em homologacao -->
+	<target name="producao" depends="tomcat-stop">
+		<echo>** Stopping Tomcat **</echo>
+		<sshexec command="${producao.tomcatstop}" host="${producao.sshhost}" password="${producao.sshpassword}" username="${producao.sshuser}" />
+		<echo>** Removing application directory **</echo>
+		<sshexec command="${producao.wardir}" host="${producao.sshhost}" password="${producao.sshpassword}" username="${producao.sshuser}" />
+		<echo>** Sending WAR **</echo>
+		<scp trust="true" file="${war.file}" todir="${producao.sshuser}:${producao.sshpassword}@${producao.sshhost}:${producao.wartarget}">
+		</scp>
+		<echo>** Starting Tomcat **</echo>
+		<sshexec command="${producao.tomcatstart}" host="${producao.sshhost}" password="${producao.sshpassword}" username="${producao.sshuser}" />
+	</target>
+
+	<target name="reports" depends="test">
+		<mkdir dir="${reports.dir}"/>
+		<junitreport todir="${reports.dir}">
+			<fileset dir="${test.report.dir}">
+				<include name="**/*.xml"/>
+			</fileset>
+			<report format="noframes" todir="${reports.dir}"/>
+		</junitreport>
+	</target>
+
+	<target name="db.create">
+		<exec executable="${psql.bin.dir}/createdb"
+		        failonerror="true">
+			<arg value="-E"/>
+			<arg value="UNICODE"/>
+			<arg value="-U"/>
+			<arg value="postgres"/>
+			<arg value="${psql.db}"/>
+		</exec>
+	</target>
+
+	<target name="db.destroy">
+		<exec executable="${psql.bin.dir}/dropdb"
+			        failonerror="true">
+			<arg value="-U"/>
+			<arg value="postgres"/>
+			<arg value="${psql.db}"/>
+		</exec>
+	</target>
+
+
+	<!-- Default target -->
+	<target name="all" depends="tomcat-stop,reports,db.destroy">
+		<delete dir="${test.classes.dir}" />
+		<delete dir="${classes.dir}" />
+		<delete dir="${tomcat.wardirectory}" />
+		<delete file="${tomcat.wartarget}" />
+		<delete file="${reports.dir}/TESTS-TestSuites.xml" />
+	</target>
+
+</project>

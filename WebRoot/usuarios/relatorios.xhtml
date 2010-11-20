@@ -1,0 +1,25 @@
+<p:document 
+xmlns:p="http://jboss.com/products/seam/pdf"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<ui:composition template="../templates/relatorios/relatorio.xhtml">
+		<ui:define name="title"> usuários</ui:define>
+		<ui:define name="body">
+			<p:table columns="5" headerRows="1" widths="1 4 5 5 2">
+				<p:cell><p:font size="10" familyName="HELVETICA">ID</p:font></p:cell>
+				<p:cell><p:font size="10" familyName="HELVETICA">Nome</p:font></p:cell>
+				<p:cell><p:font size="10" familyName="HELVETICA">Email</p:font></p:cell>
+				<p:cell><p:font size="10" familyName="HELVETICA">Grupo de usuário</p:font></p:cell>
+				<p:cell><p:font size="10" familyName="HELVETICA">Ativo</p:font></p:cell>
+				<ui:repeat value="#{usuarios}" var="usuario">
+					<p:cell><p:font size="8" familyName="HELVETICA">#{usuario.id}</p:font></p:cell>
+					<p:cell><p:font size="8" familyName="HELVETICA">#{usuario.nome}</p:font></p:cell>
+					<p:cell><p:font size="8" familyName="HELVETICA">#{usuario.email}</p:font></p:cell>
+					<p:cell><p:font size="8" familyName="HELVETICA">#{usuario.gruposUsuarios.nome}</p:font></p:cell>
+					<p:cell><p:font size="8" familyName="HELVETICA">#{usuario.gruposUsuarios.ativo == true ? "Sim" : "Não"}</p:font></p:cell>
+				</ui:repeat>
+			</p:table>
+		</ui:define>
+	</ui:composition>
+</p:document>

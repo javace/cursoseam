@@ -1,0 +1,25 @@
+<p:document 
+xmlns:p="http://jboss.com/products/seam/pdf"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets">
+	<f:view>
+		<f:facet name="header">
+			<p:font size="8">
+				<p:footer alignment="right" borderWidthTop="1"
+					borderColorTop="black">#{msg['commons.report.reportfor']} <ui:insert
+						name="title" /> #{msg['commons.report.generatedin']} #{reportUtil.formatedDate}</p:footer>
+				<p:header alignment="right" borderWidthTop="1"
+					borderColorTop="black">Relatório de <ui:insert
+						name="title" /> #{msg['commons.report.generatedin']} #{reportUtil.formatedDate}</p:header>
+			</p:font>
+		</f:facet>
+
+		<p:font size="16" familyName="HELVETICA">
+			<p:paragraph spacingAfter="30">#{msg['commons.report.reportfor']} <ui:insert
+					name="title" />
+			</p:paragraph>
+		</p:font>
+
+		<ui:insert name="body" />
+	</f:view>
+</p:document>

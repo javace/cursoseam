@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+	<f:view>
+		<head>
+			<title><h:outputText value="#{msg['application.name']}" />
+				:: <ui:insert name="title" />
+			</title>
+			<link rel="stylesheet" type="text/css" href="../css/style.css" />
+		</head>
+		<body>
+			<h:form>
+				<rich:toolBar
+					style="width: 75%;float: left; height: 30px; border-right: 0px;">
+					<s:link view="/home.seam" value="#{msg['menu.usuario.inicial']}" />
+					<!-- Menu de usuários -->
+					<rich:dropDownMenu>
+						<f:facet name="label">
+							<h:panelGroup>
+								<h:outputText value="#{msg['menu.usuario.title']}" />
+							</h:panelGroup>
+						</f:facet>
+						<rich:menuItem>
+							<s:link view="/usuarios/usuarios.seam"
+								value="#{msg['menu.usuario.title']}" />
+						</rich:menuItem>
+						<rich:menuItem>
+							<s:link view="/usuarios/grupos.seam"
+								value="#{msg['menu.grupo.title']}" />
+						</rich:menuItem>
+						<rich:menuItem>
+							<s:link view="/colaborador/colaboradores.seam"
+								value="#{msg['menu.colaborador.title']}" />
+						</rich:menuItem>
+						<rich:menuItem>
+							<s:link view="/produto/produtos.seam"
+								value="#{msg['menu.produto.title']}" />
+						</rich:menuItem>
+						<rich:menuItem>
+							<s:link view="/produto/vendas.seam"
+								value="#{msg['menu.venda.title']}" />
+						</rich:menuItem>
+					</rich:dropDownMenu>
+
+					<!-- Fim do menu -->
+				</rich:toolBar>
+				<!-- Barra de boas vindas -->
+				<rich:toolBar style="width: 25%; height: 31px; border-left: 0px; ">
+					<h:outputText style="text-align: right; float: right;margin-left: -60px"
+						value="#{msg['toolbar.direita.boasvindas']} #{identity.principal}" />
+					<h:commandLink  action="#{identity.logout}" >#{msg['commons.logout']}</h:commandLink>
+				</rich:toolBar>
+			</h:form>
+			<ui:insert name="body" />
+		</body>
+	</f:view>
+</html>

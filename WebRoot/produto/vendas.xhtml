@@ -1,0 +1,108 @@
+<html xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:rich="http://richfaces.org/rich">
+	<f:view>
+		<ui:composition template="../templates/principal.xhtml">
+			<ui:define name="title"> #{msg['menu.produto.title']}</ui:define>
+			<ui:define name="body">
+				<a4j:form id="crudForm">
+					<fieldset class="form">
+						<legend>
+							#{msg['commons.form']}
+						</legend>
+						<s:validateAll>
+							<h:panelGrid columns="2" id="painelEdicao">
+								<a4j:outputPanel ajaxRendered="true">
+									<rich:messages styleClass="messageBox" errorClass="error"
+										infoClass="success" />
+								</a4j:outputPanel>
+								<h:inputHidden value="#{venda.id}" id="id" />
+								<h:outputLabel for="id" value="#{msg['page.vendas.form.id']}" />
+								<h:inputText value="#{venda.id}" readonly="true" />
+
+								<h:outputLabel for="colaborador"
+									value="#{msg['page.vendas.form.colaborador']}" />
+								<h:selectOneMenu id="colaborador" value="#{venda.colaborador}"
+									required="true" label="#{msg['page.vendas.form.colaborador']}">
+									<s:selectItems value="#{colaboradores}" var="p"
+										label="#{p.nome}" />
+									<s:convertEntity />
+								</h:selectOneMenu>
+								
+								<h:outputLabel for="cliente"
+									value="#{msg['page.vendas.form.cliente']}" />
+								<h:selectOneMenu id="cliente" value="#{venda.cliente}"
+									required="true" label="#{msg['page.vendas.form.cliente']}">
+									<s:selectItems value="#{clientes}" var="p"
+										label="#{p.nome}" />
+									<s:convertEntity />
+								</h:selectOneMenu>
+
+								<h:outputLabel for="senha"
+									value="#{msg['page.vendas.form.senha']}" />
+								<h:inputText id="senha" value="#{vendaService.senha}"
+									label="#{msg['page.vendas.form.senha']}">
+								</h:inputText>
+							</h:panelGrid>
+							<a4j:include viewId="../produto/itemVenda.xhtml">
+								<ui:param name="qtdeVenda" value="#{vendaService.quantidade}" />
+								<ui:param name="produtoVenda" value="#{vendaService.produto}" />
+							</a4j:include>
+							<div>
+								<a4j:commandButton
+									action="#{vendaService.adicionar}" reRender="itensVenda" value="#{msg['page.vendas.form.adicionar']}">
+									<s:conversationPropagation type="join"/>
+								</a4j:commandButton>
+							</div>
+							
+							<div>
+								<a4j:commandButton reRender="datagrid,painelEdicao,itensVenda"
+									action="#{vendaService.save}" value="#{msg['commons.salvar']}">
+								</a4j:commandButton>
+							</div>
+						</s:validateAll>
+					</fieldset>
+					<fieldset class="grid">
+						<legend>
+							#{msg['commons.grid']}
+						</legend>
+						<ui:include src="../templates/relatorios/exportar.xhtml"></ui:include>
+						<a4j:region>
+							<rich:dataTable value="#{vendas}" var="h" id="datagrid"
+								width="550" rendered="#{! empty vendas}">
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="#{msg['page.colaboradores.grid.cpf']}" />
+									</f:facet>
+									<h:outputText value="#{h.data}" />
+								</rich:column>
+								<rich:column styleClass="option">
+									<f:facet name="header">
+										<h:outputText value="#{msg['commons.editar']}" />
+									</f:facet>
+									<a4j:commandButton action="#{produtoService.editar}"
+										reRender="painelEdicao" value="#{msg['commons.editar']}">
+									</a4j:commandButton>
+								</rich:column>
+								<rich:column styleClass="option">
+									<f:facet name="header">
+										<h:outputText value="#{msg['commons.excluir']}" />
+									</f:facet>
+									<a4j:commandButton action="#{vendaService.delete}"
+										reRender="datagrid" value="#{msg['commons.excluir']}">
+									</a4j:commandButton>
+								</rich:column>
+							</rich:dataTable>
+						</a4j:region>
+					</fieldset>
+				</a4j:form>
+			</ui:define>
+		</ui:composition>
+	</f:view>
+</html>

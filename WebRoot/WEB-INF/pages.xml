@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pages xmlns="http://jboss.com/products/seam/pages" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.1.xsd">
+
+	<page view-id="/login.xhtml">
+		<navigation from-action="#{identity.login}">
+			<rule if="#{identity.loggedIn}">
+				<redirect view-id="/home.xhtml" />
+			</rule>
+		</navigation>
+	</page>
+
+	<page view-id="/home.xhtml" login-required="true">
+		<navigation>
+			<redirect view-id="/login.xhtml" />
+		</navigation>
+	</page>
+	
+	<page view-id="/usuarios/*" login-required="true"/>
+	
+
+	<exception class="org.jboss.seam.security.NotLoggedInException">
+		<redirect view-id="/login.xhtml" />
+	</exception>
+
+	<exception class="org.jboss.seam.security.AuthorizationException">
+		<end-conversation />
+		<redirect view-id="/accessdenied.xhtml">
+			<message> You do not have the necessary privileges to perform this
+		action. </message>
+		</redirect>
+	</exception>
+	
+	<exception class="javax.persistence.PersistenceException">
+		<redirect view-id="/error.xhtml">
+			<message severity="ERROR">                                                       
+            Database access failed: #{handledException.message}                             
+            </message>
+		</redirect>
+	</exception>
+
+	<exception>
+		<redirect view-id="/error.xhtml">
+			<message severity="WARN">Unexpected error: #{handledException.message}</message>
+		</redirect>
+	</exception>
+
+
+
+</pages>

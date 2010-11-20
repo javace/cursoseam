@@ -1,0 +1,162 @@
+<html xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:rich="http://richfaces.org/rich">
+	<f:view>
+		<ui:composition template="../templates/principal.xhtml">
+			<ui:define name="title"> #{msg['menu.colaborador.title']}</ui:define>
+			<ui:define name="body">
+				<a4j:form id="crudForm">
+					<fieldset class="form">
+						<legend>
+							#{msg['commons.form']}
+						</legend>
+						<s:validateAll>
+							<h:panelGrid columns="3" id="painelEdicao"
+								columnClasses="right,left">
+								<div>
+									<a4j:outputPanel ajaxRendered="true">
+										<rich:messages styleClass="messageBox" errorClass="error"
+											infoClass="success" />
+									</a4j:outputPanel>
+								</div>
+								<div>
+									<h:outputLabel value=""></h:outputLabel>
+									<h:inputHidden value="#{colaborador.id}" id="id"></h:inputHidden>
+								</div>
+								<div>
+									<h:outputLabel for="id" value="#{msg['page.grupos.form.id']}" />
+									<h:inputText value="#{colaborador.id}" readonly="true" />
+
+								</div>
+								<div>
+									<h:outputLabel for="nome"
+										value="#{msg['page.colaboradores.form.nome']}" />
+									<h:inputText id="nome" value="#{colaborador.nome}"
+										required="true" label="#{msg['page.colaboradores.form.nome']}" />
+								</div>
+								<div>
+									<h:outputLabel for="cpf"
+										value="#{msg['page.colaboradores.form.cpf']}" />
+									<h:inputText id="cpf" value="#{colaborador.cpf}"
+										required="true" label="#{msg['page.colaboradores.form.cpf']}" />
+								</div>
+								<div>
+									<h:outputLabel for="rg"
+										value="#{msg['page.colaboradores.form.rg']}" />
+									<h:inputText id="rg" value="#{colaborador.rg}" required="true"
+										label="#{msg['page.colaboradores.form.rg']}" />
+								</div>
+								<div>
+									<h:outputLabel for="email"
+										value="#{msg['page.colaboradores.form.email']}" />
+									<h:inputText id="email" value="#{colaborador.email}"
+										required="true"
+										label="#{msg['page.colaboradores.form.email']}" />
+								</div>
+								<div>
+									<h:outputLabel for="usuario"
+										value="#{msg['page.colaboradores.form.usuario']}" />
+									<h:selectOneMenu id="usuario" value="#{colaborador.usuario}"
+										required="true"
+										label="#{msg['page.colaboradores.form.usuario']}">
+										<s:selectItems value="#{usuarios}" var="usuario"
+											label="#{usuario.nome}" />
+										<s:convertEntity />
+									</h:selectOneMenu>
+									<s:link view="/usuarios/usuarios.seam">
+										<img align="middle"
+											alt="#{msg['page.usuarios.form.adicionarregra']}"
+											src="../images/icons/addfolder.png" width="32" height="32" />
+									</s:link>
+								</div>
+							</h:panelGrid>
+							<a4j:include viewId="../templates/commons/endereco.xhtml">
+								<ui:param name="enderecoId" value="#{colaborador.endereco.id}" />
+								<ui:param name="enderecoLogradouro"
+									value="#{colaborador.endereco.logradouro}" />
+								<ui:param name="enderecoComplemento"
+									value="#{colaborador.endereco.complemento}" />
+								<ui:param name="enderecoNumero"
+									value="#{colaborador.endereco.numero}" />
+								<ui:param name="enderecoCidadeSelecionada"
+									value="#{colaborador.endereco.cidade}" />
+								<ui:param name="enderecoCep" value="#{colaborador.endereco.cep}" />
+							</a4j:include>
+							<div>
+								<a4j:commandButton reRender="datagrid,painelEdicao,enderecos"
+									action="#{colaboradorService.save}"
+									value="#{msg['commons.salvar']}">
+								</a4j:commandButton>
+							</div>
+						</s:validateAll>
+					</fieldset>
+					<fieldset class="grid">
+						<legend>
+							#{msg['commons.grid']}
+						</legend>
+						<ui:include src="../templates/relatorios/exportar.xhtml"></ui:include>
+						<a4j:region>
+							<rich:dataTable value="#{colaboradores}" var="h" id="datagrid"
+								width="550" rendered="#{! empty colaboradores}">
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="#{msg['page.colaboradores.grid.nome']}" />
+									</f:facet>
+									<h:outputText value="#{h.nome}" />
+								</rich:column>
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="#{msg['page.colaboradores.grid.email']}" />
+									</f:facet>
+									<h:outputText value="#{h.email}" />
+								</rich:column>
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="#{msg['page.colaboradores.grid.cpf']}" />
+									</f:facet>
+									<h:outputText value="#{h.cpf}" />
+								</rich:column>
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText
+											value="#{msg['page.colaboradores.grid.usuario']}" />
+									</f:facet>
+									<h:outputText value="#{h.usuario.nome}" />
+								</rich:column>
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="#{msg['page.colaboradores.grid.grupo']}" />
+									</f:facet>
+									<h:outputText value="#{h.usuario.gruposUsuarios.nome}" />
+								</rich:column>
+								<rich:column styleClass="option">
+									<f:facet name="header">
+										<h:outputText value="#{msg['commons.editar']}" />
+									</f:facet>
+									<a4j:commandButton action="#{colaboradorService.editar}"
+										reRender="painelEdicao,enderecos"
+										value="#{msg['commons.editar']}">
+									</a4j:commandButton>
+								</rich:column>
+								<rich:column styleClass="option">
+									<f:facet name="header">
+										<h:outputText value="#{msg['commons.excluir']}" />
+									</f:facet>
+									<a4j:commandButton action="#{colaboradorService.delete}"
+										reRender="datagrid" value="#{msg['commons.excluir']}">
+									</a4j:commandButton>
+								</rich:column>
+							</rich:dataTable>
+						</a4j:region>
+					</fieldset>
+				</a4j:form>
+			</ui:define>
+		</ui:composition>
+	</f:view>
+</html>

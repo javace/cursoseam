@@ -1,0 +1,50 @@
+<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
+<suite name="Cronos">
+	<test name="services">
+		<classes>
+			<!-- Servicos -->
+			<class name="com.cronos.service.GrupoUsuarioServiceTest" />
+			<class name="com.cronos.service.UsuarioServiceTest" />
+			<class name="com.cronos.service.ClienteServiceTest" />
+			<class name="com.cronos.service.CidadeServiceTest" />
+			<class name="com.cronos.service.EstadoServiceTest" />
+			<class name="com.cronos.service.EnderecoServiceTest" />
+			<class name="com.cronos.service.CargoServiceTest" />
+			<class name="com.cronos.service.ColaboradorServiceTest" />
+			<class name="com.cronos.service.FornecedorServiceTest" />
+			<class name="com.cronos.service.VendaServiceTest" />
+			<class name="com.cronos.service.ProdutoServiceTest" />
+			<class name="com.cronos.service.CategoriaProdutoServiceTest" />
+		</classes>
+	</test>
+	<test name="models">
+		<classes>
+			<class name="com.cronos.model.UsuarioTest" />
+			<class name="com.cronos.model.GrupoUsuarioTest" />
+		</classes>
+	</test>
+	<test name="security">
+		<classes>
+			<class name="com.cronos.security.AuthenticatorTest" />
+		</classes>
+	</test>
+	<test name="view">
+		<classes>
+			<class name="com.cronos.view.LoginTest" />
+		</classes>
+	</test>
+	<test name="util">
+		<classes>
+			<class name="com.cronos.util.XMLUtilTest" />
+			<class name="com.cronos.util.JsonUtilTest" />
+			<class name="com.cronos.util.ReportUtilTest" />
+			<class name="com.cronos.util.CronosPropertiesTest" />
+		</classes>
+	</test>
+	<test name="jarvis">
+		<classes>
+			<class name="com.cronos.jarvis.service.ActionServiceTest" />
+			<class name="com.cronos.jarvis.service.webservice.JarvisServiceErrorTest" />
+		</classes>
+	</test>
+</suite>

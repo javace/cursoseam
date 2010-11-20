@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="CursoSeamJavaCE"
+  id="myeclipse.1270488064087"
+  context-root="/CursoSeam"
+  j2ee-spec="5.0"
+  archive="CursoSeamJavaCE.war">
+  <attributes>
+    <attribute name="webrootdir" value="/WebRoot" />
+  </attributes>
+</project-module>
+

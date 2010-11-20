@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+	<f:view>
+		<h:panelGrid columns="3" id="enderecos" columnClasses="right,left">
+			<div>
+				<h:inputHidden id="enderecoId" value="#{enderecoId}"
+					label="#{msg['page.commons.endereco.form.id']}" />
+			</div>
+			<div>
+				<h:outputLabel for="enderecoLogradouro"
+					value="#{msg['page.commons.endereco.form.logradouro']}" />
+				<h:inputText id="enderecoLogradouro" value="#{enderecoLogradouro}"
+					required="true"
+					label="#{msg['page.commons.endereco.form.logradouro']}" />
+			</div>
+			<div>
+				<h:outputLabel for="enderecoNumero"
+					value="#{msg['page.commons.endereco.form.numero']}" />
+				<h:inputText id="enderecoNumero" value="#{enderecoNumero}"
+					required="true" label="#{msg['page.commons.endereco.form.numero']}">
+				</h:inputText>
+			</div>
+			<div>
+				<h:outputLabel for="enderecoComplemento"
+					value="#{msg['page.commons.endereco.form.complemento']}" />
+				<h:inputText id="enderecoComplemento" value="#{enderecoComplemento}"
+					required="true"
+					label="#{msg['page.commons.endereco.form.complemento']}" />
+			</div>
+			<div>
+				<h:outputLabel for="enderecoEstado"
+					value="#{msg['page.commons.endereco.form.estado']}" />
+				<h:selectOneMenu id="enderecoEstado" value="#{cidadeService.estado}"
+					onchange="#{cidadeService.loadByEstado}"
+					label="#{msg['page.commons.endereco.form.estado']}">
+					<s:selectItems value="#{estados}" var="estado"
+						label="#{estado.nome}" />
+					<s:convertEntity />
+					<a4j:support event="onchange" ajaxSingle="true"
+						action="#{cidadeService.loadByEstado}" reRender="enderecoCidade" />
+				</h:selectOneMenu>
+				<a4j:keepAlive beanName="cidadeService"></a4j:keepAlive>
+			</div>
+			<div>
+				<h:outputLabel for="enderecoCidade"
+					value="#{msg['page.commons.endereco.form.cidade']}" />
+				<h:selectOneMenu id="enderecoCidade"
+					value="#{enderecoCidadeSelecionada}" required="true"
+					label="#{msg['page.commons.endereco.form.cidade']}">
+					<s:selectItems value="#{cidades}" var="c" label="#{c.nome}" />
+					<s:convertEntity />
+				</h:selectOneMenu>
+			</div>
+			<div>
+				<h:outputLabel for="enderecoCep"
+					value="#{msg['page.commons.endereco.form.cep']}" />
+				<h:inputText id="enderecoCep" value="#{enderecoCep}" required="true"
+					label="#{msg['page.commons.endereco.form.cep']}" />
+			</div>
+		</h:panelGrid>
+	</f:view>
+</html>

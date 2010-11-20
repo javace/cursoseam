@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+	<head>
+		<title>#{msg['page.login.title']}</title>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+	<body>
+		<h:form class="loginForm" id="loginForm">
+			<rich:panel header="Login" style="width: 300px; height: 130px" >
+				<h:panelGrid columns="3" columnClasses="right,left">
+					<div>
+						<h:outputLabel for="name" value="#{msg['page.login.usuario']}" />
+						<h:inputText id="name" value="#{credentials.username}" />
+					</div>
+					<div>
+						<h:outputLabel for="password" value="#{msg['page.login.senha']}" />
+						<h:inputSecret id="password" value="#{credentials.password}" />
+					</div>
+					<div>
+						<h:commandButton value="#{msg['page.login.entrar']}" action="#{identity.login}" />
+						<h:messages infoClass="loginMessage"/>
+						<br />
+					</div>
+				</h:panelGrid>
+			</rich:panel>
+		</h:form>
+	</body>
+</html>

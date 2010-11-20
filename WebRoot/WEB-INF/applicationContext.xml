@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:cxf="http://cxf.apache.org/core" xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context-3.0xsd
+         http://cxf.apache.org/core
+         http://cxf.apache.org/schemas/core.xsd
+         http://cxf.apache.org/jaxws
+         http://cxf.apache.org/schemas/jaxws.xsd"
+	default-autowire="byName">
+
+	<!-- Load CXF modules from cxf.jar -->
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+
+	<!--<bean id="jarvisServicesImpl"
+		class="com.cronos.jarvis.service.webservice.impl.JarvisServicesImpl" />
+
+	<bean id="aegisBean" class="org.apache.cxf.aegis.databinding.AegisDatabinding"
+		scope="prototype" />
+	<bean id="aegis-service" class="org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean"
+		scope="prototype">
+		<property name="dataBinding" ref="aegisBean" />
+		<property name="serviceConfigurations">
+			<list>
+				<bean class="org.apache.cxf.jaxws.support.JaxWsServiceConfiguration" />
+				<bean class="org.apache.cxf.aegis.databinding.AegisServiceConfiguration" />
+				<bean class="org.apache.cxf.service.factory.DefaultServiceConfiguration" />
+			</list>
+		</property>
+	</bean>
+
+
+	<jaxws:endpoint id="jarvisServices"
+		implementorClass="com.cronos.jarvis.service.webservice.impl.JarvisServicesImpl"
+		implementor="#jarvisServicesImpl" address="/jarvis">
+		<jaxws:serviceFactory>
+			<ref bean="aegis-service" />
+		</jaxws:serviceFactory>
+	</jaxws:endpoint>
+
+	--><cxf:bus>
+		<cxf:features>
+			<cxf:logging />
+		</cxf:features>
+	</cxf:bus>
+</beans>

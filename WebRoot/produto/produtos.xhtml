@@ -1,0 +1,147 @@
+<html xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:rich="http://richfaces.org/rich">
+	<f:view>
+		<ui:composition template="../templates/principal.xhtml">
+			<ui:define name="title"> #{msg['menu.produto.title']}</ui:define>
+			<ui:define name="body">
+				<a4j:form id="crudForm">
+					<fieldset class="form">
+						<legend>
+							#{msg['commons.form']}
+						</legend>
+						<s:validateAll>
+							<h:panelGrid columns="3" id="painelEdicao">
+									<a4j:outputPanel ajaxRendered="true">
+										<rich:messages styleClass="messageBox" errorClass="error"
+											infoClass="success" />
+									</a4j:outputPanel>
+									<span></span>
+									<h:inputHidden value="#{produto.id}" id="id" />
+									<h:outputLabel for="id" value="#{msg['page.produtos.form.id']}" />
+									<h:inputText value="#{produto.id}" readonly="true" />
+
+									<span></span>
+									<h:outputLabel for="id"
+										value="#{msg['page.produtos.form.nome']}" />
+									<h:inputText value="#{produto.nome}" />
+									<span></span>
+									<h:outputLabel for="id"
+										value="#{msg['page.produtos.form.estoque']}" />
+									<h:inputText value="#{produto.estoque}">
+										<f:converter converterId="javax.faces.BigDecimal" />
+									</h:inputText>
+									<span></span>
+									<h:outputLabel for="id"
+										value="#{msg['page.produtos.form.estoqueMinimo']}" />
+										
+									<h:inputText value="#{produto.estoqueMinimo}">
+										<f:converter converterId="javax.faces.BigDecimal" />
+									</h:inputText>
+									<span></span>
+									<h:outputLabel for="id"
+										value="#{msg['page.produtos.form.estoqueMaximo']}" />
+									<h:inputText value="#{produto.estoqueMaximo}">
+										<f:converter converterId="javax.faces.BigDecimal" />
+									</h:inputText>
+									<span></span>
+									<h:outputLabel for="fornecedor"
+										value="#{msg['page.produtos.form.fornecedor']}" />
+									<h:selectOneMenu id="fornecedor" value="#{produto.fornecedor}"
+										required="true"
+										label="#{msg['page.produtos.form.fornecedor']}">
+										<s:selectItems value="#{fornecedores}" var="fornecedor"
+											label="#{fornecedor.nome}" />
+										<s:convertEntity />
+									</h:selectOneMenu>
+									<s:link view="/produto/fornecedores.seam">
+										<img align="middle"
+											alt="#{msg['page.produtos.form.adicionafornecedor']}"
+											src="../images/icons/addfolder.png" width="32" height="32" />
+									</s:link>
+									<h:outputLabel for="categoriaProduto"
+										value="#{msg['page.produtos.form.categoriaProduto']}" />
+									<h:selectOneMenu id="categoriaProduto"
+										value="#{produto.categoriaProduto}" required="true"
+										label="#{msg['page.produtos.form.categoriaProduto']}">
+										<s:selectItems value="#{categoriaProdutos}"
+											var="categoriaProduto" label="#{categoriaProduto.nome}" />
+										<s:convertEntity />
+									</h:selectOneMenu>
+									<s:link view="/produto/categoriaProduto.seam">
+										<img align="middle"
+											alt="#{msg['page.produtos.form.adicionafornecedor']}"
+											src="../images/icons/addfolder.png" width="32" height="32" />
+									</s:link>
+							</h:panelGrid>
+							<div>
+								<a4j:commandButton reRender="datagrid,painelEdicao,enderecos"
+									action="#{produtoService.save}"
+									value="#{msg['commons.salvar']}">
+								</a4j:commandButton>
+							</div>
+						</s:validateAll>
+					</fieldset>
+					<fieldset class="grid">
+						<legend>
+							#{msg['commons.grid']}
+						</legend>
+						<ui:include src="../templates/relatorios/exportar.xhtml"></ui:include>
+						<a4j:region>
+							<rich:dataTable value="#{produtos}" var="h" id="datagrid"
+								width="550" rendered="#{! empty produtos}">
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="#{msg['page.produtos.grid.nome']}" />
+									</f:facet>
+									<h:outputText value="#{h.nome}" />
+								</rich:column>
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="#{msg['page.produtos.grid.fornecedor']}" />
+									</f:facet>
+									<h:outputText value="#{h.fornecedor.nome}" />
+								</rich:column>
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="#{msg['page.produtos.grid.categoriaProduto']}" />
+									</f:facet>
+									<h:outputText value="#{h.categoriaProduto.nome}" />
+								</rich:column>
+								<rich:column>
+									<f:facet name="header">
+										<h:outputText value="#{msg['page.produtos.grid.estoque']}" />
+									</f:facet>
+									<h:outputText value="#{h.estoque}" />
+								</rich:column>
+								<rich:column styleClass="option">
+									<f:facet name="header">
+										<h:outputText value="#{msg['commons.editar']}" />
+									</f:facet>
+									<a4j:commandButton action="#{produtoService.editar}"
+										reRender="painelEdicao"
+										value="#{msg['commons.editar']}">
+									</a4j:commandButton>
+								</rich:column>
+								<rich:column styleClass="option">
+									<f:facet name="header">
+										<h:outputText value="#{msg['commons.excluir']}" />
+									</f:facet>
+									<a4j:commandButton action="#{produtoService.delete}"
+										reRender="datagrid" value="#{msg['commons.excluir']}">
+									</a4j:commandButton>
+								</rich:column>
+							</rich:dataTable>
+						</a4j:region>
+					</fieldset>
+				</a4j:form>
+			</ui:define>
+		</ui:composition>
+	</f:view>
+</html>
